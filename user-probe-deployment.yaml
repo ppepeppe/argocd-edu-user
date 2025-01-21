@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edu-user-deployment
+spec:
+  selector:
+    matchLabels:
+      app: edu-user-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: edu-user-app
+        version: blue
+    spec:
+      containers:
+        - name: edu-user-app
+          image: byunseongdo/edu-user:v0.9      # dockerhub image repository : repo/image명:Tag
+          imagePullPolicy: IfNotPresent        # k8s 클러스터에 다운로드 된 이미지 없으면 다운 or Always
+          ports:
+            - name: http
+              containerPort: 8080              # demo.jar 실행 포트
+              protocol: TCP
+          resources:                           # pod 사용 리소스 설정 블록
+            requests:                          # 생성시 필요한 최소 리소스
+              cpu: "1"
+              memory: "2Gi"
+            limits:                            # pod가 사용 가능한 최대 리소스
+              cpu: "1"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10 
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: edu-user-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: GOODS_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: edu-user-config
+                  key: GOODS_SERVICE_URL
+      imagePullSecrets:                        # dockerhub 이미지 pull 위한 secret
+        - name: k8s-edu-dockerhub-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edu-user-service
+spec:
+  selector:
+    app: edu-user-app
+    version: blue  # 기본적으로 Blue 배포에 연결
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080                        # deployment에서 설정한 컨테이너 포트 매핑
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: edu-user-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "edu-user.211.253.27.97.sslip.io"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: edu-user-service
+                port:
+                  number: 80
