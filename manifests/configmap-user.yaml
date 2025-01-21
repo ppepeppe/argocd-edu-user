@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edu-user-config
+  namespace: edu-user
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  GOODS_SERVICE_URL: "http://edu-goods-service.edu-goods.svc.cluster.local/api/v1/goods"
+
