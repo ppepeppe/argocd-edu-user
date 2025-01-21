@@ -54,7 +54,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: edu-user-service
-  name: edu-user
+  namespace: edu-user
 spec:
   selector:
     app: edu-user-app
@@ -69,7 +69,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: edu-user-ingress
-  name: edu-user
+  namespace: edu-user
 spec:
   ingressClassName: nginx
   rules:
