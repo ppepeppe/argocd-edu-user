@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: edu-user-deployment
+  namespace: edu-user
 spec:
   selector:
     matchLabels:
@@ -53,6 +54,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: edu-user-service
+  name: edu-user
 spec:
   selector:
     app: edu-user-app
@@ -67,6 +69,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: edu-user-ingress
+  name: edu-user
 spec:
   ingressClassName: nginx
   rules:
