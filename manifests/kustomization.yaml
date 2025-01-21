@@ -1,4 +1,4 @@
 resources:
+  - configmap-user.yaml 
   - user-probe-deployment.yaml
-  - configmap-user.yaml
   - hpa-edu-user.yaml
