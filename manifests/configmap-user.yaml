@@ -4,6 +4,6 @@ metadata:
   name: edu-user-config
   namespace: edu-user
 data:
-  SPRING_PROFILES_ACTIVE: "prod"
+  SPRING_PROFILES_ACTIVE: "dev"
   GOODS_SERVICE_URL: "http://edu-goods-service.edu-goods.svc.cluster.local/api/v1/goods"
 
